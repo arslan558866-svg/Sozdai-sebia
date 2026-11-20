@@ -28,6 +28,14 @@ input,select,textarea{width:100%;border:1px solid #d9dee5;border-radius:10px;pad
 textarea{min-height:70px;resize:vertical}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .exercise{padding:13px 0;border-top:1px solid var(--line)}.exercise:first-of-type{border-top:0}
+.exercise-media{display:grid;grid-template-columns:112px 1fr;gap:11px;align-items:start;margin:10px 0}
+.exercise-media img{width:112px;height:92px;object-fit:cover;border-radius:11px;border:1px solid var(--line);background:#eef1f4}
+.exercise-guide{background:#f7f8fa;border:1px solid var(--line);border-radius:11px;padding:10px;margin:8px 0 10px;font-size:12px;line-height:1.5}
+.exercise-guide summary{font-weight:700;color:var(--navy);cursor:pointer;padding:2px 0}
+.exercise-guide ol{padding-left:19px;margin:8px 0}.exercise-guide li{margin:4px 0}
+.exercise-tip{background:#f5f2ea;border-left:3px solid var(--gold);padding:8px 9px;border-radius:6px;margin-top:8px}
+.exercise-media .sub{line-height:1.4}
+.rest-badge{display:inline-block;background:#edf1f5;color:#14243A;border-radius:20px;padding:5px 9px;font-size:11px;font-weight:700;margin:7px 0}.rest-timer{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:#f7f8fa;border:1px solid var(--line);border-radius:11px;padding:9px;margin:5px 0 10px}.rest-clock{font-size:20px;font-weight:800;color:var(--navy);font-variant-numeric:tabular-nums;min-width:58px}.rest-timer button{border:0;border-radius:8px;padding:8px 10px;font-weight:700;background:var(--navy);color:#fff;font-size:11px}.rest-timer button.reset-rest{background:#edf1f5;color:var(--navy)}.rest-done{font-size:11px;color:var(--teal);font-weight:700}.exercise-actions{display:flex;gap:8px;margin-top:8px}.exercise-actions .btn{margin:0;padding:9px 10px;font-size:12px}.add-exercise-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end;margin-top:14px}.add-exercise-row .btn{width:auto;margin:0;white-space:nowrap;padding:12px}.setrow .remove-set{border:0;background:#fbeeee;color:#9b3333;border-radius:8px;padding:7px 5px;font-size:11px}.sethead{grid-template-columns:34px 1fr 1fr 30px}.setrow{grid-template-columns:34px 1fr 1fr 30px}
 .exercise-title{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
 .exercise-title strong{font-size:14px}.prescription{font-size:12px;color:var(--muted);white-space:nowrap}
 .sethead,.setrow{display:grid;grid-template-columns:34px 1fr 1fr;gap:8px;align-items:center}
@@ -128,7 +136,7 @@ footer{text-align:center;color:#8b96a5;font-size:11px;padding:10px}
     <button class="btn light" id="clear">Очистить все данные</button>
     <small class="note">Данные хранятся в памяти браузера на этом устройстве. Экспортируй резервную копию регулярно, чтобы не потерять записи.</small>
   </section>
-  <footer>Личный дневник тренировок · версия 1.0</footer>
+  <footer>Личный дневник тренировок · версия 1.3 · фото, техника, подходы и таймер отдыха</footer>
 </main>
 <script>
 const program={
@@ -153,36 +161,132 @@ const program={
  ["Разгибание рук на трицепс на блоке","2","12",""],
  ["Боковая планка","2","15–25 сек/сторона",""]]}
 };
+const exerciseGuides={
+"Подтягивания в гравитроне":{img:"assisted-pullup",steps:["Настрой противовес так, чтобы сохранять контроль во всём движении.","Возьмись за рукояти, опусти плечи от ушей и стабилизируй корпус.","Подтянись, направляя локти вниз; не раскачивайся.","Опускайся плавно, не бросая вес."],tip:"Не вытягивай плечи к ушам и не проваливайся резко в нижней точке."},
+"Горизонтальная тяга блока":{img:"seated-row",steps:["Сядь устойчиво, стопы поставь на платформу, спину держи нейтрально.","Начни движение сведением лопаток.","Потяни рукоять к нижним рёбрам, локти веди вдоль корпуса.","Верни рукоять вперёд медленно, не округляя поясницу."],tip:"Не отклоняй корпус назад рывком и не округляй поясницу."},
+"Жим штанги лёжа":{img:"bench-press",steps:["Ляг на скамью, стопы устойчиво поставь на пол.","Сведи лопатки и сохрани естественное положение спины.","Опускай гриф подконтрольно к комфортной точке на груди.","Выжми вверх без рывка, сохраняя запястья над предплечьями."],tip:"При дискомфорте в левом плече не опускай гриф через болезненную амплитуду; уменьши вес или замени упражнение после оценки специалистом."},
+"Сведение рук в тренажёре (бабочка)":{img:"pec-deck",steps:["Отрегулируй сиденье так, чтобы рукояти были примерно на уровне середины груди.","Слегка согни локти и прижми спину к спинке.","Сведи руки перед собой плавно.","Вернись до комфортного растяжения, не уводя локти далеко назад."],tip:"Не растягивай плечо через дискомфорт; амплитуда должна быть комфортной."},
+"Гакк-присед":{img:"hack-squat",steps:["Поставь стопы на платформу примерно на ширине плеч.","Прижми спину и таз к опоре, колени направь по линии носков.","Опускайся медленно до комфортной глубины.","Оттолкнись всей стопой, не блокируя колени резко."],tip:"Не подкручивай таз внизу и не увеличивай глубину ценой округления поясницы."},
+"Сгибание ног в тренажёре":{img:"leg-curl",steps:["Совмести ось тренажёра с областью коленного сустава.","Зафиксируй корпус и расположи валик чуть выше пяток.","Согни ноги, плавно подтягивая валик.","Медленно вернись в исходное положение."],tip:"Не делай рывков и не отрывай таз от опоры."},
+"Разгибание ног в тренажёре":{img:"leg-extension",steps:["Настрой ось тренажёра по колену, валик размести над голеностопом.","Прижми таз и спину к сиденью.","Разогни колени плавно до комфортного положения.","Медленно опусти вес, не бросая его."],tip:"Не бей коленями в полное разгибание; работай без боли."},
+"Ягодичный мост":{img:"glute-bridge",steps:["Ляг на спину, согни колени, стопы поставь на ширине таза.","Напряги ягодицы и мышцы живота.","Подними таз до линии плечи—таз—колени.","Опусти таз медленно, сохраняя контроль."],tip:"Не переразгибай поясницу в верхней точке; движение выполняют ягодицы."},
+"Bird Dog":{img:"bird-dog",steps:["Встань на четвереньки: ладони под плечами, колени под тазом.","Напряги живот и удерживай спину нейтрально.","Вытяни противоположные руку и ногу без поворота таза.","Вернись и поменяй стороны."],tip:"Начни с небольшой амплитуды. Не прогибай поясницу и не задерживай дыхание."},
+"Подъёмы на носки":{img:"calf-raise",steps:["Поставь стопы параллельно, держись за опору для равновесия.","Поднимись на носки, сохраняя давление у основания большого пальца.","Задержись на секунду вверху.","Опускай пятки медленно и подконтрольно."],tip:"Не пружинь и не раскачивай корпус."},
+"Тяга верхнего блока":{img:"lat-pulldown",steps:["Зафиксируй бёдра под валиками и возьмись за рукоять.","Слегка отклони корпус, сохраняя нейтральную спину.","Потяни рукоять к верхней части груди, направляя локти вниз.","Плавно выпрями руки, не поднимая плечи к ушам."],tip:"Не тяни за голову и не отклоняйся назад чрезмерно."},
+"Разведение гантелей в стороны (без боли)":{img:"lateral-raise",steps:["Возьми лёгкие гантели, локти слегка согнуты.","Поднимай руки в стороны примерно до уровня плеч или ниже.","Опускай гантели медленно, без раскачивания."],tip:"С учётом дискомфорта в левом плече выполняй только безболезненную амплитуду. При боли пропусти упражнение."},
+"Сгибание рук на бицепс":{img:"biceps-curl",steps:["Встань устойчиво, локти держи рядом с корпусом.","Согни руки, не раскачивая туловище.","Подними гантели до комфортной точки.","Опусти медленно, полностью контролируя вес."],tip:"Не помогай себе поясницей и не бросай гантели вниз."},
+"Разгибание рук на трицепс на блоке":{img:"triceps-pushdown",steps:["Встань перед блоком, локти прижми к корпусу.","Сохраняя плечи неподвижными, разогни руки вниз.","Внизу кратко напряги трицепс.","Верни рукоять вверх подконтрольно."],tip:"Не наклоняйся всем телом на рукоять и не разводи локти."},
+"Боковая планка":{img:"side-plank",steps:["Ляг на бок, локоть поставь под плечом.","Подними таз, выстроив корпус в одну линию.","Удерживай положение, спокойно дыша.","Опустись и повтори на другой стороне."],tip:"Если поясница болит, сократи время или используй вариант с коленями; прекрати при усилении боли."}
+};
 let day="A", data=JSON.parse(localStorage.getItem("trainingDiaryV1")||'{"workouts":[],"metrics":[]}');
 const $=id=>document.getElementById(id);
 for(let i=1;i<=12;i++){let o=document.createElement("option");o.value=i;o.textContent="Неделя "+i;$("week").append(o)}
-$("date").value=new Date().toISOString().slice(0,10);
+function localISODate(d=new Date()){const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,"0"),dd=String(d.getDate()).padStart(2,"0");return `${y}-${m}-${dd}`;}
+$("date").value=localISODate();
+
+const restByExercise={
+"Подтягивания в гравитроне":90,"Горизонтальная тяга блока":90,"Жим штанги лёжа":120,
+"Сведение рук в тренажёре (бабочка)":75,"Dead Bug":45,"Гакк-присед":120,
+"Сгибание ног в тренажёре":75,"Разгибание ног в тренажёре":75,"Ягодичный мост":75,
+"Bird Dog":45,"Подъёмы на носки":60,"Тяга верхнего блока":90,
+"Разведение гантелей в стороны (без боли)":60,"Сгибание рук на бицепс":60,
+"Разгибание рук на трицепс на блоке":60,"Боковая планка":45,
+"Жим гантелей лёжа нейтральным хватом":90,"Тяга гантели с опорой":90,
+"Приседание к скамье без веса":75,"Разгибание рук с канатом":60,
+"Сгибание рук на нижнем блоке":60,"Обратная бабочка":60
+};
+const photoByExercise={
+"Подтягивания в гравитроне":1,"Горизонтальная тяга блока":2,"Жим штанги лёжа":3,
+"Сведение рук в тренажёре (бабочка)":4,"Гакк-присед":5,"Сгибание ног в тренажёре":6,
+"Разгибание ног в тренажёре":7,"Ягодичный мост":8,"Bird Dog":9,"Подъёмы на носки":10,
+"Тяга верхнего блока":11,"Разведение гантелей в стороны (без боли)":12,
+"Сгибание рук на бицепс":14,"Разгибание рук на трицепс на блоке":15,
+"Боковая планка":16,"Тяга гантели с опорой":2,
+"Жим гантелей лёжа нейтральным хватом":3,"Приседание к скамье без веса":5,
+"Разгибание рук с канатом":15,"Сгибание рук на нижнем блоке":14,"Обратная бабочка":4
+};
+const extraExerciseCatalog=[
+["Жим гантелей лёжа нейтральным хватом","2","10–12",""],
+["Тяга гантели с опорой","2","10–12",""],
+["Приседание к скамье без веса","2","10–12",""],
+["Разгибание рук с канатом","2","12–15",""],
+["Сгибание рук на нижнем блоке","2","12–15",""],
+["Обратная бабочка","2","12–15",""],
+["Подъёмы на носки","2","12–15",""],
+["Bird Dog","2","8 на сторону",""]
+];
+function formatRest(sec){return `${Math.floor(sec/60)} мин${sec%60?` ${sec%60} сек`:""}`;}
+function makeExerciseCard(ex,i,previous){
+ const name=ex[0], prescribed=Number(ex[1])||2, range=ex[2]||"8–12";
+ const guide=exerciseGuides[name];
+ const imgNo=photoByExercise[name];
+ const imgSrc=imgNo?`exercises/exercise-${String(imgNo).padStart(2,"0")}.jpg`:"";
+ const prevExercise=previous?.items?.find(x=>x.name===name);
+ const wrap=document.createElement("div");wrap.className="exercise";wrap.dataset.name=name;
+ const photo=imgSrc?`<div class="exercise-media"><img src="${imgSrc}" alt="Фото упражнения ${name}" loading="lazy"><div><div class="sub">Фото выполнения</div><div class="sub" style="margin-top:5px">${prescribed} подхода · ${range} повторений</div></div></div>`:
+ `<div class="exercise-media"><div style="width:112px;height:92px;border-radius:11px;background:#edf1f5;display:grid;place-items:center;color:#718096;font-size:11px;text-align:center;padding:6px">Фото<br>упражнения</div><div class="sub">Иллюстрация будет добавлена в следующем обновлении.</div></div>`;
+ const guideHtml=guide?`<details class="exercise-guide"><summary>Как выполнять · техника и подсказки</summary><ol>${guide.steps.map(x=>`<li>${x}</li>`).join("")}</ol><div class="exercise-tip"><b>Важно:</b> ${guide.tip}</div></details>`:
+ `<details class="exercise-guide"><summary>Как выполнять · техника и подсказки</summary><ol><li>Займи устойчивое исходное положение и настрой оборудование.</li><li>Выполняй движение плавно, без рывков и раскачивания.</li><li>Контролируй возврат в исходное положение.</li><li>Дыши свободно, не задерживай дыхание.</li></ol><div class="exercise-tip"><b>Важно:</b> Работай в безболезненной амплитуде и прекращай упражнение при боли.</div></details>`;
+ const rest=restByExercise[name]||75;
+ wrap.innerHTML=`<div class="exercise-title"><strong>${i+1}. ${name}</strong><span class="prescription">${prescribed} × ${range}</span></div>${photo}${guideHtml}<div class="rest-badge">Отдых между подходами: ${formatRest(rest)}</div><div class="sethead"><span>№</span><span>Вес, кг</span><span>Повторы</span><span></span></div><div class="sets-container"></div><div class="exercise-actions"><button type="button" class="btn light add-set">＋ Добавить подход</button><button type="button" class="btn light remove-exercise">Убрать</button></div>`;
+ const setsContainer=wrap.querySelector(".sets-container");
+ const oldSets=prevExercise?.sets||[];
+ const count=Math.max(prescribed,oldSets.length);
+ for(let s=0;s<count;s++) addSetRow(setsContainer,name,s,oldSets[s],s===0&&ex[3]!==""?ex[3]:"");
+ wrap.querySelector(".add-set").onclick=()=>addSetRow(setsContainer,name,setsContainer.children.length);
+ wrap.querySelector(".remove-exercise").onclick=()=>{if(confirm(`Убрать упражнение «${name}» из этой тренировки?`))wrap.remove();};
+ let remaining=rest, timerId=null;
+ const clock=wrap.querySelector(".rest-clock"), startBtn=wrap.querySelector(".start-rest"), done=wrap.querySelector(".rest-done");
+ const paint=()=>{clock.textContent=formatRest(remaining);};
+ startBtn.onclick=()=>{
+  if(timerId){clearInterval(timerId);timerId=null;startBtn.textContent="Продолжить";return;}
+  if(remaining<=0)remaining=rest;
+  startBtn.textContent="Пауза";done.textContent="";
+  timerId=setInterval(()=>{
+   remaining=Math.max(0,remaining-1);paint();
+   if(remaining===0){
+    clearInterval(timerId);timerId=null;startBtn.textContent="Повторить";
+    done.textContent="Отдых завершён!";
+    if("vibrate" in navigator) navigator.vibrate([180,100,180]);
+   }
+  },1000);
+ };
+ wrap.querySelector(".reset-rest").onclick=()=>{
+  if(timerId){clearInterval(timerId);timerId=null;}
+  remaining=rest;paint();startBtn.textContent="Старт отдыха";done.textContent="";
+ };
+ return wrap;
+}
+function addSetRow(container,name,index,prevSet={},fallbackWeight=""){
+ const row=document.createElement("div");row.className="setrow";
+ const w=prevSet?.weight||fallbackWeight||"", reps=prevSet?.reps||"";
+ row.innerHTML=`<span class="setnum">${container.children.length+1}</span><input type="number" step="0.5" inputmode="decimal" placeholder="кг" aria-label="Вес ${name} подход ${index+1}" value="${w}"><input type="number" inputmode="numeric" placeholder="повт." aria-label="Повторы ${name} подход ${index+1}" value="${reps}"><button type="button" class="remove-set" aria-label="Удалить подход">×</button>`;
+ row.querySelector(".remove-set").onclick=()=>{row.remove();[...container.children].forEach((r,i)=>r.querySelector(".setnum").textContent=i+1);};
+ container.append(row);
+}
 function render(){
  document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.day===day));
  $("dayTitle").textContent=program[day].title;
  $("exercises").innerHTML="";
  const previous=[...data.workouts].reverse().find(w=>w.day===day);
- program[day].items.forEach((ex,i)=>{
-  const prevExercise=previous?.items?.find(x=>x.name===ex[0]);
-  let wrap=document.createElement("div");wrap.className="exercise";
-  wrap.innerHTML=`<div class="exercise-title"><strong>${i+1}. ${ex[0]}</strong><span class="prescription">${ex[1]} × ${ex[2]}</span></div><div class="sethead"><span>Подход</span><span>Вес, кг</span><span>Повторы</span></div>`;
-  for(let s=0;s<Number(ex[1]);s++){
-   let row=document.createElement("div");row.className="setrow";
-   const prevSet=prevExercise?.sets?.[s];
-   const initialWeight=prevSet?.weight || (s===0&&ex[3]!==""?ex[3]:"");
-   const initialReps=prevSet?.reps || "";
-   row.innerHTML=`<span class="setnum">${s+1}</span><input type="number" step="0.5" inputmode="decimal" placeholder="кг" aria-label="Вес ${ex[0]} подход ${s+1}" value="${initialWeight}"><input type="number" inputmode="numeric" placeholder="повт." aria-label="Повторы ${ex[0]} подход ${s+1}" value="${initialReps}">`;
-   wrap.append(row);
-  }
-  $("exercises").append(wrap);
- });
+ program[day].items.forEach((ex,i)=>$("exercises").append(makeExerciseCard(ex,i,previous)));
+ const addRow=document.createElement("div");addRow.className="add-exercise-row";
+ addRow.innerHTML=`<div><label for="extraExercise">Добавить дополнительное упражнение</label><select id="extraExercise"><option value="">Выбери упражнение…</option>${extraExerciseCatalog.map((x,i)=>`<option value="${i}">${x[0]}</option>`).join("")}</select></div><button type="button" class="btn gold" id="addExerciseBtn">Добавить</button>`;
+ $("exercises").append(addRow);
+ $("addExerciseBtn").onclick=()=>{
+  const idx=$("extraExercise").value;if(idx==="")return;
+  const ex=extraExerciseCatalog[Number(idx)];
+  const card=makeExerciseCard(ex,$("exercises").querySelectorAll(".exercise").length,previous);
+  $("exercises").insertBefore(card,addRow);$("extraExercise").value="";
+  refreshProgressExerciseOptions();
+ };
 }
 document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{day=b.dataset.day;render()}));
-function persist(){localStorage.setItem("trainingDiaryV1",JSON.stringify(data));updateHistory()}
+function persist(){localStorage.setItem("trainingDiaryV1",JSON.stringify(data));refreshProgressExerciseOptions();updateHistory()}
 function saveWorkout(){
- const items=[...$("exercises").querySelectorAll(".exercise")].map((el,i)=>{
+ const items=[...$("exercises").querySelectorAll(".exercise")].map(el=>{
   const vals=[...el.querySelectorAll(".setrow")].map(r=>({weight:r.querySelectorAll("input")[0].value,reps:r.querySelectorAll("input")[1].value}));
-  return {name:program[day].items[i][0],sets:vals};
+  return {name:el.dataset.name,sets:vals};
  });
  data.workouts.push({date:$("date").value,week:$("week").value,day,items,leftShoulder:$("leftShoulder").value,rightShoulder:$("rightShoulder").value,back:$("back").value,energy:$("energy").value,notes:$("notes").value});
  persist();alert("Тренировка сохранена!");
@@ -191,11 +295,16 @@ function saveMetrics(){
  const entry={date:$("date").value,week:$("week").value,weight:$("bodyWeight").value,waist:$("waist").value};
  data.metrics=data.metrics.filter(x=>x.week!==entry.week);data.metrics.push(entry);persist();alert("Показатели недели сохранены!");
 }
+function refreshProgressExerciseOptions(){
+ const sel=$("progressExercise"),old=sel.value;
+ const names=[...Object.values(program).flatMap(d=>d.items.map(x=>x[0])),...extraExerciseCatalog.map(x=>x[0]),...data.workouts.flatMap(w=>w.items.map(x=>x.name))].filter((v,i,a)=>a.indexOf(v)===i);
+ sel.innerHTML="";
+ names.forEach(n=>{let o=document.createElement("option");o.value=n;o.textContent=n;sel.append(o)});
+ if(names.includes(old))sel.value=old;
+}
 function renderProgress(){
  const sel=$("progressExercise");
- if(!sel.options.length){
-  Object.values(program).flatMap(d=>d.items.map(x=>x[0])).filter((v,i,a)=>a.indexOf(v)===i).forEach(n=>{let o=document.createElement("option");o.value=n;o.textContent=n;sel.append(o)});
- }
+ if(!sel.options.length)refreshProgressExerciseOptions();
  const name=sel.value || sel.options[0]?.value;
  const records=data.workouts.filter(w=>w.items.some(x=>x.name===name)).map(w=>{
   const ex=w.items.find(x=>x.name===name);
@@ -249,7 +358,7 @@ function renderCalendar(){
  const first=new Date(year,month,1),offset=(first.getDay()+6)%7,days=new Date(year,month+1,0).getDate();
  for(let i=0;i<offset;i++){let e=document.createElement("div");grid.append(e)}
  const done=new Set(data.workouts.map(w=>w.date+"|"+w.day));
- const today=new Date().toISOString().slice(0,10);
+ const today=localISODate();
  for(let d=1;d<=days;d++){
   const date=new Date(year,month,d),iso=[year,String(month+1).padStart(2,"0"),String(d).padStart(2,"0")].join("-");
   const dow=(date.getDay()+6)%7,planned=dow===0?"A":dow===2?"B":dow===4?"C":null;
