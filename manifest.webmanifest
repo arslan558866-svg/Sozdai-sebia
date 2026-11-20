@@ -1,0 +1,22 @@
+{
+  "name": "Создай себя — тренировочный дневник",
+  "short_name": "Создай себя",
+  "description": "Персональный дневник тренировок A/B/C на 12 недель",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#14243A",
+  "theme_color": "#14243A",
+  "icons": [
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
