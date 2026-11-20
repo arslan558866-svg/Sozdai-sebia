@@ -1,4 +1,4 @@
-const CACHE = "sozday-sebya-v3";
+const CACHE = "sozday-sebya-v4";
 const FILES = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./bear-mascot.png", "./exercises/exercise-01.jpg", "./exercises/exercise-02.jpg", "./exercises/exercise-03.jpg", "./exercises/exercise-04.jpg", "./exercises/exercise-05.jpg", "./exercises/exercise-06.jpg", "./exercises/exercise-07.jpg", "./exercises/exercise-08.jpg", "./exercises/exercise-09.jpg", "./exercises/exercise-10.jpg", "./exercises/exercise-11.jpg", "./exercises/exercise-12.jpg", "./exercises/exercise-13.jpg", "./exercises/exercise-14.jpg", "./exercises/exercise-15.jpg", "./exercises/exercise-16.jpg"];
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(FILES)));
